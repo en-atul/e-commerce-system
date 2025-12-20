@@ -1,0 +1,28 @@
+{
+  "server": {
+    "port": 3003
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres",
+    "password": "postgres",
+    "name": "orderdb"
+  },
+  "kafka": {
+    "broker": "localhost:9092"
+  },
+  "jwt": {
+    "secret": "your-super-secret-jwt-key-change-in-production",
+    "expiresIn": "24h"
+  },
+  "services": {
+    "user": "http://user-service:3001",
+    "product": "http://product-service:3002",
+    "payment": "http://payment-service:3004"
+  },
+  "environment": "development",
+  "logging": {
+    "level": "debug"
+  }
+}

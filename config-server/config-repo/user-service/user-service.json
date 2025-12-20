@@ -1,0 +1,19 @@
+{
+  "server": {
+    "port": 3001
+  },
+  "database": {
+    "host": "postgres-user",
+    "port": 5432,
+    "user": "postgres",
+    "password": "postgres",
+    "name": "userdb"
+  },
+  "kafka": {
+    "broker": "kafka:29092"
+  },
+  "jwt": {
+    "secret": "your-super-secret-jwt-key-change-in-production",
+    "expiresIn": "24h"
+  }
+}

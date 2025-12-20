@@ -1,0 +1,23 @@
+{
+  "server": {
+    "port": 3004
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres",
+    "password": "postgres",
+    "name": "paymentdb"
+  },
+  "kafka": {
+    "broker": "localhost:9092"
+  },
+  "jwt": {
+    "secret": "your-super-secret-jwt-key-change-in-production",
+    "expiresIn": "24h"
+  },
+  "environment": "development",
+  "logging": {
+    "level": "debug"
+  }
+}

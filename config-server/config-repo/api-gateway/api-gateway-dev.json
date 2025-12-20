@@ -1,0 +1,32 @@
+{
+  "server": {
+    "port": 3000
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres",
+    "password": "postgres"
+  },
+  "kafka": {
+    "broker": "localhost:9092"
+  },
+  "jwt": {
+    "secret": "your-super-secret-jwt-key-change-in-production",
+    "expiresIn": "24h"
+  },
+  "services": {
+    "user": "http://user-service:3001",
+    "product": "http://product-service:3002",
+    "order": "http://order-service:3003",
+    "payment": "http://payment-service:3004"
+  },
+  "rateLimit": {
+    "windowMs": 900000,
+    "max": 100
+  },
+  "environment": "development",
+  "logging": {
+    "level": "debug"
+  }
+}
