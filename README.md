@@ -1,6 +1,19 @@
-# E-Commerce Order Management System - Microservices Architecture
+# 🛒 E-Commerce Order Management System - Microservices Architecture
 
-A comprehensive Node.js microservices-based E-Commerce Order Management System similar to Amazon, built with PostgreSQL, Kafka, Docker, and implementing the SAGA Choreography pattern.
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.18+-blue.svg)](https://expressjs.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)](https://www.postgresql.org/)
+[![Kafka](https://img.shields.io/badge/Apache%20Kafka-3.5-orange.svg)](https://kafka.apache.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+> A production-ready Node.js microservices-based E-Commerce Order Management System similar to Amazon, featuring distributed transactions, event-driven architecture, and comprehensive order processing capabilities.
+
+## 📋 Description
+
+This project demonstrates a complete **microservices architecture** for an e-commerce order management system. It implements industry-standard patterns including SAGA Choreography, API Gateway, Database per Service, and Event-Driven Architecture using Kafka. The system handles the complete order lifecycle from creation to payment processing with automatic failure compensation.
+
+**Perfect for learning microservices patterns, distributed systems, and event-driven architecture!**
 
 ## 🏗️ Architecture Overview
 
@@ -80,13 +93,44 @@ If any step fails, the system automatically triggers compensation:
 
 ## 🛠️ Technology Stack
 
-- **Runtime**: Node.js 18
-- **Framework**: Express.js
-- **Database**: PostgreSQL 15
-- **Message Broker**: Apache Kafka
-- **Containerization**: Docker & Docker Compose
-- **Authentication**: JWT (JSON Web Tokens)
-- **Rate Limiting**: express-rate-limit
+### Backend
+- **Runtime**: Node.js 18+
+- **Framework**: Express.js 4.18+
+- **Language**: JavaScript (ES6+)
+
+### Database
+- **Primary Database**: PostgreSQL 15
+- **Pattern**: Database per Service
+
+### Message Broker & Event Streaming
+- **Apache Kafka** 3.5 (Bitnami)
+- **Zookeeper** (for Kafka coordination)
+- **Kafka UI** & **Kafdrop** (monitoring tools)
+
+### Infrastructure & DevOps
+- **Docker** & **Docker Compose**
+- **Containerization**: All services containerized
+
+### Security & Authentication
+- **JWT** (JSON Web Tokens) for authentication
+- **bcryptjs** for password hashing
+- **express-rate-limit** for API rate limiting
+- **RBAC** (Role-Based Access Control)
+
+### Architecture Patterns
+- **Microservices Architecture**
+- **API Gateway Pattern**
+- **SAGA Choreography Pattern**
+- **Event-Driven Architecture**
+- **Database per Service**
+- **Centralized Configuration**
+
+### Key Libraries
+- **kafkajs** - Kafka client for Node.js
+- **pg** - PostgreSQL client
+- **jsonwebtoken** - JWT implementation
+- **http-proxy-middleware** - API Gateway routing
+- **axios** - HTTP client for service-to-service communication
 
 ## 📋 Prerequisites
 
@@ -483,6 +527,16 @@ Services can also use environment variables for configuration (current approach)
 - Verify all services are running
 - Check service logs for errors
 
+## 🏷️ Tech Tags
+
+```
+microservices, nodejs, express, postgresql, kafka, docker, 
+saga-pattern, event-driven, api-gateway, jwt, authentication, 
+rbac, distributed-systems, e-commerce, order-management, 
+rest-api, kafka-streams, zookeeper, configuration-server, 
+database-per-service, choreography-pattern, microservices-architecture
+```
+
 ## 📄 License
 
 This project is for educational purposes.
@@ -491,7 +545,34 @@ This project is for educational purposes.
 
 This is a learning project. Feel free to fork and enhance!
 
+## ⭐ Star History
+
+If you find this project helpful, please consider giving it a star!
+
 ---
 
 **Built with ❤️ using Node.js, PostgreSQL, Kafka, and Docker**
+
+### 📌 GitHub Topics
+
+For better discoverability, add these topics to your GitHub repository:
+- `microservices`
+- `nodejs`
+- `express`
+- `postgresql`
+- `kafka`
+- `docker`
+- `saga-pattern`
+- `event-driven-architecture`
+- `api-gateway`
+- `jwt-authentication`
+- `rbac`
+- `distributed-systems`
+- `e-commerce`
+- `order-management`
+- `rest-api`
+- `microservices-architecture`
+- `docker-compose`
+- `kafka-streams`
+- `configuration-management`
 

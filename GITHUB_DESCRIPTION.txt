@@ -1,0 +1,2 @@
+Production-ready Node.js microservices-based E-Commerce Order Management System with SAGA Choreography pattern, event-driven architecture using Kafka, JWT authentication, and Docker containerization.
+
