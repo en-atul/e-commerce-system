@@ -1,0 +1,12 @@
+version: '3.8'
+
+# Development Environment Configuration
+# This file extends docker-compose.yml and adds development-specific settings
+# In development, services are run manually (npm run dev), only infrastructure is containerized
+
+services:
+  # Override Kafka advertised listeners for local development
+  kafka:
+    environment:
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+

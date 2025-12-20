@@ -140,30 +140,69 @@ If any step fails, the system automatically triggers compensation:
 
 ## 🚀 Quick Start
 
-### 1. Clone and Navigate
+### Development Environment (Recommended for Development)
+
+In development, you'll run services manually for hot-reloading and debugging. Only infrastructure runs in Docker.
+
+#### 1. Start Infrastructure Services
 
 ```bash
-cd microservices/e-commerce-microservices
+# Start PostgreSQL, Kafka, Zookeeper, and monitoring tools
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 ```
 
-### 2. Start All Services
+This starts:
+- PostgreSQL (port 5433 on host, 5432 in container)
+- Zookeeper (port 2181)
+- Kafka (port 9092)
+- Kafka UI (port 8080)
+- Kafdrop (port 9000)
+
+#### 2. Run Services Manually
+
+In separate terminals, start each service:
 
 ```bash
-docker-compose up -d
+# Config Server (optional)
+cd config-server && npm install && npm run dev
+
+# User Service
+cd user-service && npm install && npm run dev
+
+# Product Service
+cd product-service && npm install && npm run dev
+
+# Order Service
+cd order-service && npm install && npm run dev
+
+# Payment Service
+cd payment-service && npm install && npm run dev
+
+# Notification Service
+cd notification-service && npm install && npm run dev
+
+# API Gateway
+cd api-gateway && npm install && npm run dev
 ```
 
-This will start:
-- PostgreSQL (single instance with multiple databases)
-- Zookeeper
-- Kafka
-- Kafka UI (port 8080) - Web interface for Kafka management
-- Kafdrop (port 9000) - Alternative Kafka web UI
-- Config Server
-- All 6 microservices
+**Note**: Services should use `localhost` for database and Kafka connections in development.
 
-### 3. Wait for Services to Initialize
+### Production Environment (All Services Containerized)
+
+#### 1. Start All Services
+
+```bash
+# Start everything (infrastructure + all microservices)
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+This starts all infrastructure services plus all 6 microservices.
+
+#### 2. Wait for Services to Initialize
 
 Wait about 30-60 seconds for all services to start and initialize their databases.
+
+**📖 For detailed instructions, see [DOCKER_COMPOSE_GUIDE.md](DOCKER_COMPOSE_GUIDE.md)**
 
 ### 4. Verify Services
 
@@ -352,28 +391,34 @@ To create an admin user, you can either:
 
 ## 🐳 Docker Services
 
-### View Logs
+### Development Environment
 
 ```bash
-# All services
-docker-compose logs -f
+# View logs
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f
 
-# Specific service
-docker-compose logs -f api-gateway
-docker-compose logs -f order-service
+# Stop infrastructure
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
 ```
 
-### Stop Services
+### Production Environment
 
 ```bash
-docker-compose down
+# View logs
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
+
+# View specific service logs
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f api-gateway
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f order-service
+
+# Stop all services
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
+
+# Stop and remove volumes (careful - deletes data!)
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml down -v
 ```
 
-### Stop and Remove Volumes
-
-```bash
-docker-compose down -v
-```
+**📖 For detailed Docker Compose usage, see [DOCKER_COMPOSE_GUIDE.md](DOCKER_COMPOSE_GUIDE.md)**
 
 ## 🔍 Monitoring and Debugging
 
@@ -410,7 +455,7 @@ kafka-console-consumer.sh --bootstrap-server localhost:29092 --topic order-event
 
 All services use a single PostgreSQL instance with separate databases:
 
-- **Host**: `localhost:5432` (or `postgres` from within Docker network)
+- **Host**: `localhost:5433` (or `postgres` from within Docker network)
 - **User**: `postgres`
 - **Password**: `postgres`
 - **Databases**:
@@ -421,8 +466,10 @@ All services use a single PostgreSQL instance with separate databases:
 
 Connect to a specific database:
 ```bash
-psql -h localhost -p 5432 -U postgres -d userdb
+psql -h localhost -p 5433 -U postgres -d userdb
 ```
+
+**Note**: PostgreSQL is mapped to port 5433 on the host to avoid conflicts with other PostgreSQL instances.
 
 ## 🏗️ Architecture Patterns
 
