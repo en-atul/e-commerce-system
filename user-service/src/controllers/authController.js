@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { publishEvent } = require('../kafka/producer');
-const config = require('../config');
+const config = require('@ecommerce/service-config');
 
 const generateToken = (user) => {
   const configData = config.getConfig();

@@ -1,4 +1,4 @@
-const config = require('../config');
+const config = require('@ecommerce/service-config');
 const bcrypt = require('bcryptjs');
 
 class User {

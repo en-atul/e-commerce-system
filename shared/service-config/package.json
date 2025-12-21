@@ -1,0 +1,10 @@
+{
+  "name": "@ecommerce/service-config",
+  "version": "1.0.0",
+  "description": "Shared Service Configuration Module for E-Commerce Microservices",
+  "main": "index.js",
+  "keywords": ["config", "microservices"],
+  "author": "",
+  "license": "ISC"
+}
+

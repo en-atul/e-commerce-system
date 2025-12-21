@@ -3,7 +3,8 @@ const cors = require('cors');
 require('dotenv').config();
 
 const ConfigClient = require('@ecommerce/config-client');
-const configModule = require('./config');
+const configModule = require('@ecommerce/service-config');
+const { ensureDatabaseExists, createPool } = require('@ecommerce/db-utils');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 
@@ -35,41 +36,6 @@ app.use((err, req, res, next) => {
     error: err.message || 'Internal server error'
   });
 });
-
-// Ensure database exists (create if it doesn't)
-const ensureDatabaseExists = async (dbConfig) => {
-  const { Pool } = require('pg');
-  // Connect to default 'postgres' database to check/create target database
-  const adminPool = new Pool({
-    host: dbConfig.host,
-    port: dbConfig.port,
-    database: 'postgres', // Connect to default database
-    user: dbConfig.user,
-    password: dbConfig.password,
-  });
-
-  try {
-    // Check if database exists
-    const result = await adminPool.query(
-      `SELECT 1 FROM pg_database WHERE datname = $1`,
-      [dbConfig.name]
-    );
-
-    if (result.rows.length === 0) {
-      // Database doesn't exist, create it
-      console.log(`Database '${dbConfig.name}' does not exist. Creating...`);
-      await adminPool.query(`CREATE DATABASE ${dbConfig.name}`);
-      console.log(`Database '${dbConfig.name}' created successfully`);
-    } else {
-      console.log(`Database '${dbConfig.name}' already exists`);
-    }
-  } catch (error) {
-    console.error(`Error ensuring database exists: ${error.message}`);
-    // Don't throw - let the connection attempt happen anyway
-  } finally {
-    await adminPool.end();
-  }
-};
 
 // Initialize database tables
 const initializeDatabase = async () => {
@@ -127,26 +93,11 @@ const initializeService = async () => {
     configModule.setConfig(config);
     configModule.setConfigClient(configClient); // Store client for optional refresh
     
-    // Ensure database exists before connecting
+    // Ensure database exists before connecting (shared utility)
     await ensureDatabaseExists(config.database);
     
-    // Initialize database connection with config
-    const { Pool } = require('pg');
-    const pool = new Pool({
-      host: config.database.host,
-      port: config.database.port,
-      database: config.database.name,
-      user: config.database.user,
-      password: config.database.password,
-      max: 20,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
-    });
-    
-    pool.on('error', (err) => {
-      console.error('Unexpected error on idle client', err);
-      process.exit(-1);
-    });
+    // Create database pool (shared utility)
+    const pool = createPool(config.database);
     
     // Store pool globally
     configModule.setPool(pool);

@@ -1,0 +1,14 @@
+{
+  "name": "@ecommerce/service-init",
+  "version": "1.0.0",
+  "description": "Shared Service Initialization Helper for E-Commerce Microservices",
+  "main": "index.js",
+  "keywords": ["service", "initialization", "microservices"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ecommerce/config-client": "file:../config-client",
+    "@ecommerce/db-utils": "file:../db-utils"
+  }
+}
+

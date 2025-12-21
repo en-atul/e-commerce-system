@@ -1,5 +1,5 @@
 /**
- * Configuration module
+ * Shared Service Configuration Module
  * Stores configuration loaded from config-server at startup
  * 
  * Strategy: Fetch once at startup, store in memory
@@ -34,6 +34,9 @@ module.exports = {
   },
   setConfigClient: (client) => {
     configClient = client;
+  },
+  getConfigClient: () => {
+    return configClient;
   },
   /**
    * Refresh configuration from config-server (optional)

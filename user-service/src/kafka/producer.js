@@ -1,5 +1,5 @@
 const { Kafka } = require('kafkajs');
-const config = require('../config');
+const config = require('@ecommerce/service-config');
 
 // Initialize Kafka with config (will be set after config is loaded)
 let kafka = null;

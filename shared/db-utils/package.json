@@ -1,0 +1,13 @@
+{
+  "name": "@ecommerce/db-utils",
+  "version": "1.0.0",
+  "description": "Shared Database Utilities for E-Commerce Microservices",
+  "main": "index.js",
+  "keywords": ["database", "postgres", "microservices"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^8.11.3"
+  }
+}
+
