@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
+const config = require('../config');
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -9,6 +8,9 @@ const authenticateToken = (req, res, next) => {
   if (!token) {
     return res.status(401).json({ error: 'Access token required' });
   }
+
+  const configData = config.getConfig();
+  const JWT_SECRET = configData.jwt.secret;
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {

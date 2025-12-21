@@ -1,15 +1,27 @@
 const { Kafka } = require('kafkajs');
+const config = require('../config');
 
-const kafka = new Kafka({
-  clientId: 'user-service',
-  brokers: [process.env.KAFKA_BROKER || 'localhost:9092']
-});
-
-const producer = kafka.producer();
+// Initialize Kafka with config (will be set after config is loaded)
+let kafka = null;
+let producer = null;
 
 let isConnected = false;
 
+const initializeKafka = () => {
+  if (!kafka) {
+    const configData = config.getConfig();
+    kafka = new Kafka({
+      clientId: 'user-service',
+      brokers: [configData.kafka.broker]
+    });
+    producer = kafka.producer();
+  }
+};
+
 const connect = async () => {
+  if (!producer) {
+    initializeKafka();
+  }
   if (!isConnected) {
     await producer.connect();
     isConnected = true;

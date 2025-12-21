@@ -1,11 +1,13 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { publishEvent } = require('../kafka/producer');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
+const config = require('../config');
 
 const generateToken = (user) => {
+  const configData = config.getConfig();
+  const JWT_SECRET = configData.jwt.secret;
+  const JWT_EXPIRES_IN = configData.jwt.expiresIn;
+  
   return jwt.sign(
     {
       id: user.id,

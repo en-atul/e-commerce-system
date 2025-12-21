@@ -1,4 +1,4 @@
-const pool = require('../db/connection');
+const config = require('../config');
 const bcrypt = require('bcryptjs');
 
 class User {
@@ -6,6 +6,7 @@ class User {
     const { email, password, firstName, lastName, role = 'USER' } = userData;
     const passwordHash = await bcrypt.hash(password, 10);
     
+    const pool = config.getPool();
     const result = await pool.query(
       `INSERT INTO users (email, password_hash, first_name, last_name, role)
        VALUES ($1, $2, $3, $4, $5)
@@ -17,6 +18,7 @@ class User {
   }
 
   static async findByEmail(email) {
+    const pool = config.getPool();
     const result = await pool.query(
       'SELECT * FROM users WHERE email = $1',
       [email]
@@ -25,6 +27,7 @@ class User {
   }
 
   static async findById(id) {
+    const pool = config.getPool();
     const result = await pool.query(
       'SELECT id, email, first_name, last_name, role, created_at FROM users WHERE id = $1',
       [id]
@@ -61,6 +64,7 @@ class User {
     fields.push(`updated_at = CURRENT_TIMESTAMP`);
     values.push(id);
 
+    const pool = config.getPool();
     const result = await pool.query(
       `UPDATE users SET ${fields.join(', ')} WHERE id = $${paramCount}
        RETURNING id, email, first_name, last_name, role, updated_at`,
@@ -71,11 +75,13 @@ class User {
   }
 
   static async delete(id) {
+    const pool = config.getPool();
     const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
     return result.rows[0];
   }
 
   static async list(limit = 50, offset = 0) {
+    const pool = config.getPool();
     const result = await pool.query(
       'SELECT id, email, first_name, last_name, role, created_at FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2',
       [limit, offset]

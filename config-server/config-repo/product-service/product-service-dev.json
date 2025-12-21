@@ -4,7 +4,7 @@
   },
   "database": {
     "host": "localhost",
-    "port": 5432,
+    "port": 5433,
     "user": "postgres",
     "password": "postgres",
     "name": "productdb"
@@ -13,7 +13,7 @@
     "broker": "localhost:9092"
   },
   "jwt": {
-    "secret": "your-super-secret-jwt-key-change-in-production",
+    "secret": "dev-jwt-secret-key-not-for-production",
     "expiresIn": "24h"
   },
   "environment": "development",

@@ -6,13 +6,13 @@
     "host": "postgres-api",
     "port": 5432,
     "user": "postgres",
-    "password": "postgres"
+    "password": "aws-secrets-manager:ecommerce/database/password"
   },
   "kafka": {
     "broker": "kafka:29092"
   },
   "jwt": {
-    "secret": "your-super-secret-jwt-key-change-in-production",
+    "secret": "aws-secrets-manager:ecommerce/jwt/secret",
     "expiresIn": "24h"
   },
   "services": {

@@ -1,13 +1,15 @@
 const fs = require('fs-extra');
 const path = require('path');
+const secretsService = require('./secretsService');
 
 const CONFIG_DIR = process.env.CONFIG_DIR || path.join(__dirname, '../../config-repo');
+const USE_AWS_SECRETS = process.env.USE_AWS_SECRETS === 'true' || process.env.USE_AWS_SECRETS === '1';
 
 /**
  * Get configuration for a service and profile
  * @param {string} serviceName - Name of the service
  * @param {string} profile - Environment profile (dev, prod, default)
- * @returns {Object} Merged configuration object
+ * @returns {Object} Merged configuration object with resolved secrets
  */
 const getConfig = async (serviceName, profile = 'default') => {
   try {
@@ -26,6 +28,19 @@ const getConfig = async (serviceName, profile = 'default') => {
       if (await fs.pathExists(profileConfigPath)) {
         const profileConfig = await fs.readJson(profileConfigPath);
         Object.assign(config, profileConfig);
+      }
+    }
+
+    // Resolve secrets from AWS Secrets Manager if enabled
+    if (USE_AWS_SECRETS) {
+      try {
+        return await secretsService.resolveSecretsInConfig(config);
+      } catch (error) {
+        console.error(`Error resolving secrets for ${serviceName}/${profile}:`, error.message);
+        // Continue with unresolved secrets if AWS Secrets Manager fails
+        // This allows graceful degradation
+        console.warn('Returning config with unresolved secret references');
+        return config;
       }
     }
 
@@ -134,13 +149,17 @@ const getDefaultConfig = (serviceName) => {
       host: `postgres-${serviceName.split('-')[0]}`,
       port: 5432,
       user: 'postgres',
-      password: 'postgres'
+      password: USE_AWS_SECRETS 
+        ? 'aws-secrets-manager:ecommerce/database/password' 
+        : 'postgres'
     },
     kafka: {
       broker: 'kafka:29092'
     },
     jwt: {
-      secret: 'your-super-secret-jwt-key-change-in-production',
+      secret: USE_AWS_SECRETS 
+        ? 'aws-secrets-manager:ecommerce/jwt/secret' 
+        : 'your-super-secret-jwt-key-change-in-production',
       expiresIn: '24h'
     }
   };
@@ -203,6 +222,7 @@ const getDefaultConfig = (serviceName) => {
 
 /**
  * Get development configuration for a service
+ * Dev configs use plain text values (no AWS Secrets Manager) for easier local development
  */
 const getDevConfig = (serviceName) => {
   const defaultConfig = getDefaultConfig(serviceName);
@@ -214,10 +234,16 @@ const getDevConfig = (serviceName) => {
     },
     database: {
       ...defaultConfig.database,
-      host: 'localhost'
+      host: 'localhost',
+      // Override with plain text values for dev (no AWS Secrets Manager needed)
+      password: 'postgres'
     },
     kafka: {
       broker: 'localhost:9092'
+    },
+    jwt: {
+      secret: 'dev-jwt-secret-key-not-for-production',
+      expiresIn: '24h'
     }
   };
 };
