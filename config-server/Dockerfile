@@ -2,11 +2,14 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+# Copy package files
+COPY config-server/package*.json ./
 
+# Install dependencies
 RUN npm ci --only=production
 
-COPY . .
+# Copy source code
+COPY config-server/ .
 
 EXPOSE 8888
 

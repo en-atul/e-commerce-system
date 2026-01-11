@@ -7,7 +7,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> A production-ready Node.js microservices-based E-Commerce Order Management System similar to Amazon, featuring distributed transactions, event-driven architecture, and comprehensive order processing capabilities.
+> A production-ready Node.js microservices-based E-Commerce Order Management System, featuring distributed transactions, event-driven architecture, and comprehensive order processing capabilities.
 
 ## 📋 Description
 
@@ -94,30 +94,36 @@ If any step fails, the system automatically triggers compensation:
 ## 🛠️ Technology Stack
 
 ### Backend
+
 - **Runtime**: Node.js 18+
 - **Framework**: Express.js 4.18+
 - **Language**: JavaScript (ES6+)
 
 ### Database
+
 - **Primary Database**: PostgreSQL 15
 - **Pattern**: Database per Service
 
 ### Message Broker & Event Streaming
+
 - **Apache Kafka** 3.5 (Bitnami)
 - **Zookeeper** (for Kafka coordination)
 - **Kafka UI** & **Kafdrop** (monitoring tools)
 
 ### Infrastructure & DevOps
+
 - **Docker** & **Docker Compose**
 - **Containerization**: All services containerized
 
 ### Security & Authentication
+
 - **JWT** (JSON Web Tokens) for authentication
 - **bcryptjs** for password hashing
 - **express-rate-limit** for API rate limiting
 - **RBAC** (Role-Based Access Control)
 
 ### Architecture Patterns
+
 - **Microservices Architecture**
 - **API Gateway Pattern**
 - **SAGA Choreography Pattern**
@@ -126,6 +132,7 @@ If any step fails, the system automatically triggers compensation:
 - **Centralized Configuration**
 
 ### Key Libraries
+
 - **kafkajs** - Kafka client for Node.js
 - **pg** - PostgreSQL client
 - **jsonwebtoken** - JWT implementation
@@ -152,6 +159,7 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 ```
 
 This starts:
+
 - PostgreSQL (port 5433 on host, 5432 in container)
 - Zookeeper (port 2181)
 - Kafka (port 9092)
@@ -250,10 +258,12 @@ Authorization: Bearer <your-jwt-token>
 #### User Service (via API Gateway)
 
 **Public Endpoints:**
+
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login and get JWT token
 
 **Protected Endpoints:**
+
 - `GET /api/auth/profile` - Get current user profile
 - `GET /api/users` - List all users (Admin only)
 - `GET /api/users/:id` - Get user by ID
@@ -263,10 +273,12 @@ Authorization: Bearer <your-jwt-token>
 #### Product Service (via API Gateway)
 
 **Public Endpoints:**
+
 - `GET /api/products` - List products (with filters: category, minPrice, maxPrice, inStock)
 - `GET /api/products/:id` - Get product by ID
 
 **Admin Endpoints:**
+
 - `POST /api/admin/products` - Create product
 - `PUT /api/admin/products/:id` - Update product
 - `DELETE /api/admin/products/:id` - Delete product
@@ -274,6 +286,7 @@ Authorization: Bearer <your-jwt-token>
 #### Order Service (via API Gateway)
 
 **Protected Endpoints:**
+
 - `POST /api/orders` - Create order (triggers SAGA)
 - `GET /api/orders/my-orders` - Get current user's orders
 - `GET /api/orders/:id` - Get order by ID
@@ -282,6 +295,7 @@ Authorization: Bearer <your-jwt-token>
 #### Payment Service (via API Gateway)
 
 **Protected Endpoints:**
+
 - `GET /api/payments/order/:orderId` - Get payment by order ID
 - `GET /api/payments/my-payments` - Get current user's payments
 - `GET /api/payments/:id` - Get payment by ID
@@ -354,6 +368,7 @@ curl -X POST http://localhost:3000/api/orders \
 ```
 
 This will trigger the SAGA pattern:
+
 1. Order created with PENDING status
 2. Products reserved
 3. Payment processed
@@ -372,6 +387,7 @@ curl http://localhost:3000/api/orders/1 \
 ### User Roles
 
 - **USER** - Regular customer, can:
+
   - View products
   - Create orders
   - View own orders and payments
@@ -386,6 +402,7 @@ curl http://localhost:3000/api/orders/1 \
 ### Creating an Admin User
 
 To create an admin user, you can either:
+
 1. Manually insert into the database with role='ADMIN'
 2. Use the user service directly (bypassing API Gateway) to create an admin
 
@@ -427,12 +444,14 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml down -v
 The system includes two web-based Kafka management tools:
 
 **Kafka UI** (Port 8080):
+
 - Access at: `http://localhost:8080`
 - Modern web interface for Kafka cluster management
 - View topics, messages, consumers, and producers
 - Real-time monitoring and management
 
 **Kafdrop** (Port 9000):
+
 - Access at: `http://localhost:9000`
 - Alternative Kafka web UI
 - Browse topics and messages
@@ -465,6 +484,7 @@ All services use a single PostgreSQL instance with separate databases:
   - `paymentdb` - Payment Service database
 
 Connect to a specific database:
+
 ```bash
 psql -h localhost -p 5433 -U postgres -d userdb
 ```
@@ -474,30 +494,36 @@ psql -h localhost -p 5433 -U postgres -d userdb
 ## 🏗️ Architecture Patterns
 
 ### 1. API Gateway Pattern
+
 - Single entry point for all client requests
 - Handles authentication, rate limiting, and routing
 - Reduces client complexity
 
 ### 2. Database per Service
+
 - Each microservice has its own database
 - Ensures service independence and data isolation
 - Allows independent scaling
 
 ### 3. Event-Driven Architecture
+
 - Services communicate via Kafka events
 - Loose coupling between services
 - Asynchronous processing
 
 ### 4. SAGA Choreography Pattern
+
 - Distributed transaction management
 - Each service knows what to do next
 - Automatic compensation on failures
 
 ### 5. Circuit Breaker Pattern
+
 - Implemented in service-to-service calls
 - Prevents cascading failures
 
 ### 6. Centralized Configuration Pattern
+
 - Config Server provides centralized configuration management
 - Environment-specific configurations (dev, prod, default)
 - Services can fetch configs at startup or use environment variables
@@ -522,6 +548,7 @@ The system includes a **Config Server** (port 8888) for centralized configuratio
 - **List Profiles**: `GET http://localhost:8888/api/config/{serviceName}/profiles`
 
 Example:
+
 ```bash
 # Get user service dev configuration
 curl http://localhost:8888/api/config/user-service/dev
@@ -539,7 +566,7 @@ Services can also use environment variables for configuration (current approach)
 - `PORT` - Service port
 - `CONFIG_SERVER_URL` - Config Server URL (optional)
 
-## 🚧 Future Enhancements
+<!-- ## 🚧 Future Enhancements
 
 - [ ] Add Redis for caching
 - [ ] Implement service discovery (Consul/Eureka)
@@ -550,39 +577,33 @@ Services can also use environment variables for configuration (current approach)
 - [ ] Implement idempotency keys
 - [ ] Add request/response logging
 - [ ] Implement health checks with dependencies
-- [ ] Add API documentation (Swagger/OpenAPI)
+- [ ] Add API documentation (Swagger/OpenAPI) -->
 
 ## 🐛 Troubleshooting
 
 ### Services not starting
+
 - Check Docker logs: `docker-compose logs`
 - Ensure ports are not already in use
 - Wait for databases to be ready before services start
 
 ### Database connection errors
+
 - Verify PostgreSQL containers are running: `docker ps`
 - Check database health: `docker-compose ps`
 
 ### Kafka connection errors
+
 - Ensure Zookeeper is running before Kafka
 - Check Kafka logs: `docker-compose logs kafka`
 - Verify Kafka health: `docker-compose ps kafka`
 - Access Kafka UI at `http://localhost:8080` to inspect topics and messages
 
 ### Order not processing
+
 - Check Kafka topics for events
 - Verify all services are running
 - Check service logs for errors
-
-## 🏷️ Tech Tags
-
-```
-microservices, nodejs, express, postgresql, kafka, docker, 
-saga-pattern, event-driven, api-gateway, jwt, authentication, 
-rbac, distributed-systems, e-commerce, order-management, 
-rest-api, kafka-streams, zookeeper, configuration-server, 
-database-per-service, choreography-pattern, microservices-architecture
-```
 
 ## 📄 License
 
@@ -591,35 +612,3 @@ This project is for educational purposes.
 ## 👥 Contributing
 
 This is a learning project. Feel free to fork and enhance!
-
-## ⭐ Star History
-
-If you find this project helpful, please consider giving it a star!
-
----
-
-**Built with ❤️ using Node.js, PostgreSQL, Kafka, and Docker**
-
-### 📌 GitHub Topics
-
-For better discoverability, add these topics to your GitHub repository:
-- `microservices`
-- `nodejs`
-- `express`
-- `postgresql`
-- `kafka`
-- `docker`
-- `saga-pattern`
-- `event-driven-architecture`
-- `api-gateway`
-- `jwt-authentication`
-- `rbac`
-- `distributed-systems`
-- `e-commerce`
-- `order-management`
-- `rest-api`
-- `microservices-architecture`
-- `docker-compose`
-- `kafka-streams`
-- `configuration-management`
-

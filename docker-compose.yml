@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database (single instance with multiple databases)
   postgres:
@@ -9,7 +7,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5433:5432"  # Using 5433 to avoid conflict with other PostgreSQL instances
+      - "5433:5432" # Using 5433 to avoid conflict with other PostgreSQL instances
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres-init/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
@@ -67,7 +65,11 @@ services:
     networks:
       - ecommerce-network
     healthcheck:
-      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:29092 --list"]
+      test:
+        [
+          "CMD-SHELL",
+          "kafka-topics.sh --bootstrap-server localhost:29092 --list",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
